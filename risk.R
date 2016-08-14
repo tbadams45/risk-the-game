@@ -1,4 +1,3 @@
-#library(reshape2)
 
 roll <- function(dice = 1, times = 1) {
   sample(1:6, size = dice, replace = TRUE)
@@ -8,6 +7,11 @@ roll <- function(dice = 1, times = 1) {
 # Largest one is the first in the vector.
 get_top_two <- function(roll) {
   n <- length(roll)
+  
+  if (length(roll) < 2)
+  {
+    return(roll)
+  }
   sorted <- sort(roll, partial = n-1)
   c(sorted[n], sorted[n-1])
 }
@@ -27,7 +31,12 @@ battle <- function(num_d = 2, num_o = 3) {
   o <- roll(num_o)
   o_top <- get_top_two(o)
   
-  obv <- c(compare(o_top[1], d_top[1]), compare(o_top[2], d_top[2]))
+  if(min(num_d, num_o) == 1){
+    obv <- compare(o_top[1], d_top[1])
+  }
+  else {
+    obv <- c(compare(o_top[1], d_top[1]), compare(o_top[2], d_top[2]))
+  }
   
   obv
 }

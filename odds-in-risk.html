@@ -133,6 +133,11 @@ roll &lt;- function(dice = 1, times = 1) {
 # Largest one is the first in the vector.
 get_top_two &lt;- function(roll) {
   n &lt;- length(roll)
+  
+  if (length(roll) &lt; 2)
+  {
+    return(roll)
+  }
   sorted &lt;- sort(roll, partial = n-1)
   c(sorted[n], sorted[n-1])
 }
@@ -152,7 +157,12 @@ battle &lt;- function(num_d = 2, num_o = 3) {
   o &lt;- roll(num_o)
   o_top &lt;- get_top_two(o)
   
-  obv &lt;- c(compare(o_top[1], d_top[1]), compare(o_top[2], d_top[2]))
+  if(min(num_d, num_o) == 1){
+    obv &lt;- compare(o_top[1], d_top[1])
+  }
+  else {
+    obv &lt;- c(compare(o_top[1], d_top[1]), compare(o_top[2], d_top[2]))
+  }
   
   obv
 }
@@ -165,13 +175,29 @@ sim &lt;- function(n, num_d, num_o) {
 
 # probability the attacker wins
 length(result[result == &quot;attack&quot;])/length(result)</code></pre>
-<pre><code>## [1] 0.53818</code></pre>
+<pre><code>## [1] 0.537765</code></pre>
 <p>With 2 dice for both:</p>
 <pre class="r"><code>result &lt;- sim(100000, num_d = 2, num_o = 2)
 
 # probability the attacker wins
 length(result[result == &quot;attack&quot;])/length(result)</code></pre>
-<pre><code>## [1] 0.38954</code></pre>
+<pre><code>## [1] 0.38906</code></pre>
+<p>What happens if the defender has one die?</p>
+<pre class="r"><code>attack3 &lt;- sim(100000, num_d = 1, num_o = 3)
+
+# probability the attacker wins (with 3 dice)
+length(attack3[attack3 == &quot;attack&quot;])/length(attack3)</code></pre>
+<pre><code>## [1] 0.66235</code></pre>
+<pre class="r"><code>attack2 &lt;- sim(100000, num_d = 1, num_o = 2)
+
+# probability the attacker wins (with 2 dice)
+length(attack2[attack2 == &quot;attack&quot;])/length(attack2)</code></pre>
+<pre><code>## [1] 0.57697</code></pre>
+<pre class="r"><code>attack1 &lt;- sim(100000, num_d = 1, num_o = 1)
+
+# probability the attacker wins (with 1 dice)
+length(attack1[attack1 == &quot;attack&quot;])/length(attack1)</code></pre>
+<pre><code>## [1] 0.41646</code></pre>
 
 
 

@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-#library(reshape2)
 
 roll <- function(dice = 1, times = 1) {
   sample(1:6, size = dice, replace = TRUE)
@@ -20,6 +19,11 @@ roll <- function(dice = 1, times = 1) {
 # Largest one is the first in the vector.
 get_top_two <- function(roll) {
   n <- length(roll)
+  
+  if (length(roll) < 2)
+  {
+    return(roll)
+  }
   sorted <- sort(roll, partial = n-1)
   c(sorted[n], sorted[n-1])
 }
@@ -39,13 +43,23 @@ battle <- function(num_d = 2, num_o = 3) {
   o <- roll(num_o)
   o_top <- get_top_two(o)
   
-  obv <- c(compare(o_top[1], d_top[1]), compare(o_top[2], d_top[2]))
+  if(min(num_d, num_o) == 1){
+    obv <- compare(o_top[1], d_top[1])
+  }
+  else {
+    obv <- c(compare(o_top[1], d_top[1]), compare(o_top[2], d_top[2]))
+  }
   
   obv
 }
 
 sim <- function(n, num_d, num_o) {
   replicate(n, battle(num_d = num_d, num_o = num_o))
+}
+
+# probability the attacker wins
+prob_attacker(result) {
+  length(result[result == "attack"])/length(result)
 }
 
 
@@ -58,7 +72,7 @@ With 3 dice for the attacker and 2 for the defender:
 result <- sim(100000, num_d = 2, num_o = 3)
 
 # probability the attacker wins
-length(result[result == "attack"])/length(result)
+prob_attacker(result)
 ```
 
 
@@ -68,5 +82,26 @@ With 2 dice for both:
 result <- sim(100000, num_d = 2, num_o = 2)
 
 # probability the attacker wins
-length(result[result == "attack"])/length(result)
+prob_attacker(result)
+```
+
+What happens if the defender uses one die?
+
+```{r}
+attack3 <- sim(100000, num_d = 1, num_o = 3)
+
+# probability the attacker wins (with 3 dice)
+prob_attacker(attack3)
+
+attack2 <- sim(100000, num_d = 1, num_o = 2)
+
+# probability the attacker wins (with 2 dice)
+prob_attacker(attack2)
+
+attack1 <- sim(100000, num_d = 1, num_o = 1)
+
+# probability the attacker wins (with 1 dice)
+prob_attacker(attack1)
+
+
 ```
